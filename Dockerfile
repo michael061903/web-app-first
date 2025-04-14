@@ -1,18 +1,21 @@
-# Use a lightweight official Python image
+# Use a minimal Python base image
 FROM python:3.11-slim
 
-# Set working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy requirements.txt and install dependencies
+# Copy dependency file and install packages
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy your app files into the container
+# Copy your app code and scripts
 COPY . .
 
-# Expose the port Flask/Gunicorn will listen on
+# Make sure script is executable
+RUN chmod +x my_script.sh
+
+# Expose the port your app listens on
 EXPOSE 8000
 
-# Run Gunicorn to serve your app
+# Start Gunicorn to serve the app
 CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000", "--workers", "2"]
