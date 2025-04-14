@@ -4,16 +4,16 @@ python3 -m venv mike
 source ~mike/bin/activate
 pip install -r requirements.txt
 
-
-#########AUTO START AND RUN IN BACKGROUND###########
-
-✅ 5. Optional Extras
+#########AUTO START AND RUN DOCKER IN BACKGROUND###########
 Auto-restart the container: docker run --restart unless-stopped -p 8000:8000 flaskbashapp
 Run in background: docker run -d -p 8000:8000 flaskbashapp
 
 
-#####HOW TO RUN########################
+#####HOW TO RUN DOCKER########################
 docker run --name docker-gunicorn-flask-bash -p 8000:8000 flaskbashapp --name flaskshit
 
 > What does that do??
 >> It triggers this: gunicorn app:app --bind 0.0.0.0:8000 --workers 2
+
+############HOW TO PUSH TO DOCKER HUB#############
+docker push michaelmau/web-app-first:latest
