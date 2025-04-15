@@ -79,3 +79,15 @@ def index():
 
 
 > gunicorn app:app --bind 0.0.0.0:8000
+
+
+
+
+> In your Bash script (command_builder.sh)
+At the end of the script, add:
+
+bash
+Copy
+Edit
+echo "===== FULL OUTPUT FROM LOG_FILE ====="
+cat "$LOG_FILE"
