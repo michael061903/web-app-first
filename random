@@ -1,1 +1,76 @@
+Create a Wrapper Script for Flask (e.g., run_single_device.sh) This will bypass the interactive prompts by feeding arguments directly to the script. Here’s that wrapper:
+
+
+#!/bin/bash
+
+# This bypasses the prompt and just runs the command builder template
+CHOICE=1
+F5_USER="$1"
+F5_PASS="$2"
+F5_HOST="$3"
+COMMAND_TMSH="$4"
+COMMAND_BASH="$5"
+
+export F5_USER
+export F5_PASS
+export F5_HOST
+export COMMAND_TMSH
+export COMMAND_BASH
+export CHOICE
+
+# Feed values into the command builder script using a here document
+./v3command_shell.sh <<EOF
+$CHOICE
+$F5_HOST
+$F5_USER
+$F5_PASS
+$COMMAND_TMSH
+$COMMAND_BASH
+EOF
+
+
+
+3. Update Your app.py to Call This Wrapper. Here’s your updated Flask app.py:
+
+
+
+from flask import Flask, request, render_template_string
+import subprocess
+
+app = Flask(__name__)
+
+HTML = '''
+<h1>Run My Script from Flask</h1>
+<form method="post">
+    F5 Username: <input type="text" name="f5_user"><br>
+    F5 Password: <input type="password" name="f5_pass"><br>
+    F5 Device IP/Hostname: <input type="text" name="f5_host"><br>
+    TMOS Command: <input type="text" name="tmos_cmd"><br>
+    BASH Command: <input type="text" name="bash_cmd"><br>
+    <input type="submit" value="Run Script">
+</form>
+
+{% if output %}
+<h2>Script Output:</h2>
+<pre>{{ output }}</pre>
+{% endif %}
+'''
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    output = None
+    if request.method == 'POST':
+        f5_user = request.form['f5_user']
+        f5_pass = request.form['f5_pass']
+        f5_host = request.form['f5_host']
+        tmos_cmd = request.form['tmos_cmd']
+        bash_cmd = request.form['bash_cmd']
+
+        result = subprocess.run(
+            ["bash", "run_single_device.sh", f5_user, f5_pass, f5_host, tmos_cmd, bash_cmd],
+            capture_output=True,
+            text=True
+        )
+        output = result.stdout
+    return render_template_string(HTML, output=output)
 
