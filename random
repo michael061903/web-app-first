@@ -1,4 +1,4 @@
-Create a Wrapper Script for Flask (e.g., run_single_device.sh) This will bypass the interactive prompts by feeding arguments directly to the script. Here’s that wrapper:
+> Create a Wrapper Script for Flask (e.g., run_single_device.sh) This will bypass the interactive prompts by feeding arguments directly to the script. Here’s that wrapper:
 
 
 #!/bin/bash
@@ -30,7 +30,7 @@ EOF
 
 
 
-3. Update Your app.py to Call This Wrapper. Here’s your updated Flask app.py:
+> Update Your app.py to Call This Wrapper. Here’s your updated Flask app.py:
 
 
 
@@ -74,3 +74,8 @@ def index():
         output = result.stdout
     return render_template_string(HTML, output=output)
 
+
+
+
+
+> gunicorn app:app --bind 0.0.0.0:8000
